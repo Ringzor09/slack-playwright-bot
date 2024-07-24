@@ -1,3 +1,4 @@
+// api/trigger-workflow.js
 const axios = require('axios');
 
 module.exports = async (req, res) => {
@@ -7,7 +8,7 @@ module.exports = async (req, res) => {
 
   const githubToken = process.env.GITHUB_TOKEN; // Use environment variable
   const repo = 'Ringzor09/adverlink'; // Format: owner/repo
-  const workflowId = 'playwright.yml';
+  const workflowId = 'playwright.yml'; // Updated to the filename
 
   console.log('Received request at /trigger-workflow');
   console.log('Request body:', req.body);
