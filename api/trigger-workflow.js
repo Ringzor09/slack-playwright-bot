@@ -3,7 +3,7 @@ const axios = require('axios');
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const githubToken = process.env.GITHUB_TOKEN; // Use environment variables
-    const repo = 'adverlink'; // Format: owner/repo
+    const repo = 'Ringzor09/adverlink'; // Format: owner/repo
     const workflowId = 'playwright.yml';
 
     try {
