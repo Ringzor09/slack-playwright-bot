@@ -1,16 +1,14 @@
 {
   "name": "slack-playwright-bot",
   "version": "1.0.0",
-  "description": "A Slack bot to run Playwright scripts",
-  "main": "server.js",
+  "description": "A Slack bot to trigger Playwright scripts via GitHub Actions",
+  "main": "api/trigger-workflow.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node api/trigger-workflow.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "body-parser": "^1.19.0",
-    "playwright": "^1.45.3",
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "express": "^4.17.1"
   },
   "engines": {
     "node": "18.x"
