@@ -1,14 +1,14 @@
 const axios = require('axios');
 
 module.exports = async (req, res) => {
-  if (req.method === 'POST') {
-    const githubToken = process.env.GITHUB_TOKEN; // Ensure this is set in Vercel
-    const repo = 'Ringzor09/adverlink'; // Update with your GitHub repo
-    const workflowId = 'playwright.yml'; // Update with your GitHub Actions workflow filename
+  const githubToken = process.env.GITHUB_TOKEN; // Use environment variable
+  const repo = 'Ringzor09/adverlink'; // Format: owner/repo
+  const workflowId = 'playwright.yml';
 
+  if (req.method === 'POST') {
     try {
       await axios.post(`https://api.github.com/repos/${repo}/actions/workflows/${workflowId}/dispatches`, {
-        ref: 'main' // Branch name
+        ref: 'main'
       }, {
         headers: {
           'Authorization': `token ${githubToken}`,
@@ -22,6 +22,6 @@ module.exports = async (req, res) => {
       res.status(500).json({ message: 'Error triggering workflow.' });
     }
   } else {
-    res.status(405).json({ message: 'Method not allowed.' });
+    res.status(405).json({ message: 'Method Not Allowed' });
   }
 };
