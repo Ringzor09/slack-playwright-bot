@@ -2,14 +2,13 @@ const axios = require('axios');
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
-    const githubToken = process.env.GITHUB_TOKEN; // Use environment variables
-    const repo = 'Ringzor09/adverlink'; // Format: owner/repo
+    const githubToken = process.env.GITHUB_TOKEN;
+    const repo = 'Ringzor09/adverlink';
     const workflowId = 'playwright.yml';
 
     try {
-      // Trigger the GitHub Actions workflow
       await axios.post(`https://api.github.com/repos/${repo}/actions/workflows/${workflowId}/dispatches`, {
-        ref: 'main' // Branch name where the workflow is defined
+        ref: 'main'
       }, {
         headers: {
           'Authorization': `token ${githubToken}`,
