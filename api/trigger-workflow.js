@@ -1,24 +1,23 @@
 const express = require('express');
 const axios = require('axios');
-const { WebClient } = require('@slack/web-api'); // Slack Web API
+const { WebClient } = require('@slack/web-api');
 
 const app = express();
-app.use(express.json()); // Parse JSON payloads
+app.use(express.json());
 
-const slackToken = 'xoxb-your-slack-bot-token'; // Replace with your Slack Bot Token
+const slackToken = process.env.SLACK_BOT_TOKEN;
 const webClient = new WebClient(slackToken);
-const channelId = 'general'; // Replace with the ID of the channel where you want to post messages
+const channelId = process.env.SLACK_CHANNEL_ID;
 
-// Endpoint to handle webhook requests
 app.post('/api/trigger-workflow', async (req, res) => {
-  const githubToken = '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'; // Replace with your GitHub token
-  const repo = 'Ringzor09/adverlink'; // Format: owner/repo
+  const githubToken = process.env.GITHUB_TOKEN;
+  const repo = 'Ringzor09/adverlink';
   const workflowId = 'playwright.yml';
 
   try {
-    // Trigger the GitHub Actions workflow
-    await axios.post(`https://api.github.com/repos/${repo}/actions/workflows/${workflowId}/dispatches`, {
-      ref: 'main' // Branch name where the workflow is defined
+    // Trigger GitHub Actions workflow
+    const response = await axios.post(`https://api.github.com/repos/${repo}/actions/workflows/${workflowId}/dispatches`, {
+      ref: 'main'
     }, {
       headers: {
         'Authorization': `token ${githubToken}`,
@@ -26,29 +25,26 @@ app.post('/api/trigger-workflow', async (req, res) => {
       }
     });
 
-    // Post a message to Slack
+    // Post success message to Slack
     await webClient.chat.postMessage({
-      channel: channelId, // Replace with your channel ID
-      text: 'Workflow triggered successfully.'
+      channel: channelId,
+      text: 'Playwright script ran successfully!'
     });
 
-    // Respond to the Slack request
-    res.status(200).send(); // Send an empty response to Slack
+    res.status(200).send(); // Respond with a 200 status to avoid showing any text
   } catch (error) {
-    console.error('Error triggering workflow:', error);
+    console.error('Error triggering workflow:', error.response ? error.response.data : error.message);
 
-    // Post an error message to Slack
+    // Post error message to Slack
     await webClient.chat.postMessage({
-      channel: channelId, // Replace with your channel ID
-      text: 'Error triggering workflow.'
+      channel: channelId,
+      text: `Error triggering workflow: ${error.response ? JSON.stringify(error.response.data) : error.message}`
     });
 
-    // Respond to the Slack request
-    res.status(500).send(); // Send an empty response to Slack
+    res.status(500).send({ message: 'Error triggering workflow.', error: error.response ? error.response.data : error.message });
   }
 });
 
-// Start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
