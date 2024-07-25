@@ -11,7 +11,7 @@ const channelId = 'general'; // Replace with the ID of the channel where you wan
 
 // Endpoint to handle webhook requests
 app.post('/api/trigger-workflow', async (req, res) => {
-  const githubToken = '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'; // Replace with your GitHub token
+  const githubToken = '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'; // Replace with your GitHub token
   const repo = 'Ringzor09/adverlink'; // Format: owner/repo
   const workflowId = 'playwright.yml';
 
