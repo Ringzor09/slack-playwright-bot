@@ -7,7 +7,7 @@ app.use(express.json()); // Parse JSON payloads
 
 const slackToken = 'xoxb-your-slack-bot-token'; // Replace with your Slack Bot Token
 const webClient = new WebClient(slackToken);
-const channelId = 'YOUR_CHANNEL_ID'; // Replace with the ID of the channel where you want to post messages
+const channelId = 'general'; // Replace with the ID of the channel where you want to post messages
 
 // Endpoint to handle webhook requests
 app.post('/api/trigger-workflow', async (req, res) => {
