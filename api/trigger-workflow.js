@@ -1,18 +1,17 @@
-const express = require('express');
+// api/trigger-workflow.js
 const axios = require('axios');
-const { WebClient } = require('@slack/web-api');
 
-const app = express();
-app.use(express.json());
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
+  }
 
-const slackToken = process.env.SLACK_BOT_TOKEN;
-const webClient = new WebClient(slackToken);
-const channelId = process.env.SLACK_CHANNEL_ID;
+  const githubToken = process.env.GITHUB_TOKEN; // Use environment variable
+  const repo = 'Ringzor09/adverlink'; // Format: owner/repo
+  const workflowId = 'playwright.yml'; // Updated to the filename
 
-app.post('/api/trigger-workflow', async (req, res) => {
-  const githubToken = process.env.GITHUB_TOKEN;
-  const repo = 'Ringzor09/adverlink';
-  const workflowId = 'playwright.yml';
+  console.log('Received request at /trigger-workflow');
+  console.log('Request body:', req.body);
 
   try {
     // Trigger GitHub Actions workflow
@@ -25,27 +24,11 @@ app.post('/api/trigger-workflow', async (req, res) => {
       }
     });
 
-    // Post success message to Slack
-    await webClient.chat.postMessage({
-      channel: channelId,
-      text: 'Playwright script ran successfully!'
-    });
+    console.log('GitHub response:', response.data);
 
-    res.status(200).send(); // Respond with a 200 status to avoid showing any text
+    res.status(200).json({ message: 'Workflow triggered successfully.' });
   } catch (error) {
     console.error('Error triggering workflow:', error.response ? error.response.data : error.message);
-
-    // Post error message to Slack
-    await webClient.chat.postMessage({
-      channel: channelId,
-      text: `Error triggering workflow: ${error.response ? JSON.stringify(error.response.data) : error.message}`
-    });
-
-    res.status(500).send({ message: 'Error triggering workflow.', error: error.response ? error.response.data : error.message });
+    res.status(500).json({ message: 'Error triggering workflow.' });
   }
-});
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+};
